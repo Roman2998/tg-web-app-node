@@ -25,7 +25,6 @@ bot.on('message', async (msg) => {
             }
         })
     }
-
     // if(msg?.web_app_data?.data) {
     //     try {
     //         const data = JSON.parse(msg?.web_app_data?.data)
@@ -57,7 +56,7 @@ bot.on('message', async (msg) => {
 });
 
 app.post('/web-data', async (req, res) => {
-    const {queryId, products = [], totalPrice /*, customerName, customerCar*/} = req.body;
+    const {queryId, products = [], totalPrice , customerName, customerCar} = req.body;
     //const botOwner = '266833777'
     try {
         await bot.answerWebAppQuery(queryId, {
@@ -65,8 +64,8 @@ app.post('/web-data', async (req, res) => {
             id: queryId,
             title: 'Успешная заявка',
             input_message_content: {
-                // message_text: `${customerName}? поздравляю вас, вы оформили на ремонт ${products.map(item => item.title).join(', ')}, на сумму от ${totalPrice}`
-                message_text: `Работает ${products.map(item => item.title).join(', ')}, на сумму от ${totalPrice}`
+                message_text: `${customerName},${customerCar}  поздравляю вас, вы оформили на ремонт ${products.map(item => item.title).join(', ')}, на сумму от ${totalPrice}`
+                // message_text: `Работает ${products.map(item => item.title).join(', ')}, на сумму от ${totalPrice}`
             }
         })
 
