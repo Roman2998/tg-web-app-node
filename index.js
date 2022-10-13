@@ -79,9 +79,9 @@ app.post('/web-data', async (req, res) => {
         //     }
         // })
 
-        return res.status(200).json({});
+        return res.status(200).json({message: 'Success'});
     } catch (e) {
-        return res.status(500).json({})
+        return res.status(500).json({message: 'Error connecting to db', e})
     }
 })
 
