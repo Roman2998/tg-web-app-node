@@ -2,7 +2,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
 const cors = require('cors');
 
-const token = '5408488109:AAFcr0JqdFDW2HvIr7MF4V5utwagJxKLYFM';
+const token = '5668805313:AAEjoTsoorxXofOejRp6uN8D1aeTYdIz4Z8';
 const webAppUrl = 'https://mellifluous-blancmange-dbb48f.netlify.app';
 
 const bot = new TelegramBot(token, {polling: true});
@@ -13,19 +13,11 @@ app.use(cors());
 
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
-    const roman_mrr = '@roman_mrr';
+    const botOwner = '266833777';
     const text = msg.text;
 
     if(text === '/start') {
-        await bot.sendMessage(chatId, 'Ниже появится кнопка, заполни форму', {
-            reply_markup: {
-                keyboard: [
-                    [{text: 'Заполнить форму', web_app: {url: webAppUrl + '/form'}}]
-                ]
-            }
-        })
-
-        await bot.sendMessage(chatId, 'Заходи в наш интернет магазин по кнопке ниже', {
+        await bot.sendMessage(chatId, 'Заходи в наш автосревис по кнопке ниже', {
             reply_markup: {
                 inline_keyboard: [
                     [{text: 'Сделать заказ', web_app: {url: webAppUrl}}]
@@ -34,47 +26,57 @@ bot.on('message', async (msg) => {
         })
     }
 
-    if(msg?.web_app_data?.data) {
-        try {
-            const data = JSON.parse(msg?.web_app_data?.data)
-            console.log(data)
-            await bot.sendMessage(chatId, 'Спасибо за обратную связь!')
-            await bot.sendMessage(chatId, 'Ваша страна: ' + data?.country);
-            await bot.sendMessage(chatId, 'Ваша улица: ' + data?.street);
-
-            setTimeout(async () => {
-                await bot.sendMessage(chatId, 'Всю информацию вы получите в этом чате');
-            }, 3000)
-
-
-            setTimeout(async () => {
-                await bot.sendMessage(chatId, 'Всю информацию вы получите в этом чате');
-
-
-                await bot.answerWebAppQuery(roman_mrr, {
-                    id: roman_mrr,
-                    title: 'Успешная покупка',
-                })
-
-            }, 3000)
-
-        } catch (e) {
-            console.log(e);
-        }
-    }
+    // if(msg?.web_app_data?.data) {
+    //     try {
+    //         const data = JSON.parse(msg?.web_app_data?.data)
+    //         console.log(data)
+    //         // await bot.sendMessage(chatId, 'Спасибо за обратную связь!')
+    //         // await bot.sendMessage(chatId, 'Ваше имя: ' + data?.customerName);
+    //         // await bot.sendMessage(chatId, 'ваша машина: ' + data?.customerCar);
+    //
+    //         // setTimeout(async () => {
+    //         //     await bot.sendMessage(chatId, 'Всю информацию вы получите в этом чате');
+    //         // }, 3000)
+    //
+    //
+    //         // setTimeout(async () => {
+    //         //     await bot.sendMessage(chatId, 'Всю информацию вы получите в этом чате');
+    //
+    //
+    //             // await bot.answerWebAppQuery(botOwner, {
+    //             //     id: botOwner,
+    //             //     title: 'Успешная покупка',
+    //             // })
+    //
+    //         // }, 3000)
+    //
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // }
 });
 
 app.post('/web-data', async (req, res) => {
-    const {queryId, products = [], totalPrice} = req.body;
+    const {queryId, products = [], totalPrice, customerName, customerCar} = req.body;
     try {
         await bot.answerWebAppQuery(queryId, {
             type: 'article',
             id: queryId,
-            title: 'Успешная покупка',
+            title: 'Успешная заявка',
             input_message_content: {
-                message_text: ` Поздравляю с покупкой, вы приобрели товар на сумму ${totalPrice}, ${products.map(item => item.title).join(', ')}`
+                message_text: `${customerName}? поздравляю вас, вы оформили на ремонт ${products.map(item => item.title).join(', ')}, на сумму от ${totalPrice}`
             }
         })
+
+        await bot.answerWebAppQuery(queryId, {
+            type: 'article',
+            id: botOwner,
+            title: 'Успешная заявка',
+            input_message_content: {
+                message_text: ` ${customerName}, владелец авто ${customerCar}, оформил заявку на ремонт ремонт ${products.map(item => item.title).join(', ')}, на сумму от ${totalPrice}`
+            }
+        })
+
         return res.status(200).json({});
     } catch (e) {
         return res.status(500).json({})
