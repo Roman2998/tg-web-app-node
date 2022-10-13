@@ -57,6 +57,7 @@ bot.on('message', async (msg) => {
 
 app.post('/web-data', async (req, res) => {
     const {queryId, products = [], totalPrice , customerName, customerCar} = req.body;
+    console.log("body: ", req.body )
     //const botOwner = '266833777'
     try {
         await bot.answerWebAppQuery(queryId, {
