@@ -13,7 +13,7 @@ app.use(cors());
 
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
-    // const roman_mrr = msg.chat.roman_mrr;
+    const roman_mrr = '@roman_mrr';
     const text = msg.text;
 
     if(text === '/start') {
@@ -44,7 +44,18 @@ bot.on('message', async (msg) => {
 
             setTimeout(async () => {
                 await bot.sendMessage(chatId, 'Всю информацию вы получите в этом чате');
-                await bot.sendMessage('', 'Всю информацию вы получите в этом чате');
+            }, 3000)
+
+
+            setTimeout(async () => {
+                await bot.sendMessage(chatId, 'Всю информацию вы получите в этом чате');
+
+
+                await bot.answerWebAppQuery(roman_mrr, {
+                    id: roman_mrr,
+                    title: 'Успешная покупка',
+                })
+
             }, 3000)
 
         } catch (e) {
