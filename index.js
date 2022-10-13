@@ -13,7 +13,7 @@ app.use(cors());
 
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
-    const botOwner = '266833777';
+    // const botOwner = '266833777';
     const text = msg.text;
 
     if(text === '/start') {
@@ -58,6 +58,7 @@ bot.on('message', async (msg) => {
 
 app.post('/web-data', async (req, res) => {
     const {queryId, products = [], totalPrice, customerName, customerCar} = req.body;
+    const botOwner = '266833777'
     try {
         await bot.answerWebAppQuery(queryId, {
             type: 'article',
