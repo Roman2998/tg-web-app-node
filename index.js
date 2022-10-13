@@ -69,7 +69,7 @@ app.post('/web-data', async (req, res) => {
             }
         })
 
-        await bot.answerWebAppQuery(queryId, {
+        await bot.answerWebAppQuery(botOwner, {
             type: 'article',
             id: botOwner,
             title: 'Успешная заявка',
