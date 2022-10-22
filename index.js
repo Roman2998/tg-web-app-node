@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 
 const token = '5641968865:AAFZN32b3Wo2k8NMydxlylUqHl60FSW_Ygc';
-const webAppUrl = 'http://31.172.134.205:5000';
+const webAppUrl = 'https://cerulean-flan-338d26.netlify.app';
 const map = 'https://yandex.ru/maps/-/CCUZFCrXHD';
 
 const bot = new TelegramBot(token, {polling: true});
@@ -56,6 +56,6 @@ app.post('/web-data', async (req, res) => {
 })
 
 
-const PORT = 8000;
+const PORT = 80;
 
 app.listen(PORT, () => console.log('server started on PORT ' + PORT))
