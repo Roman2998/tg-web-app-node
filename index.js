@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 
 const token = '5641968865:AAFZN32b3Wo2k8NMydxlylUqHl60FSW_Ygc';
-const webAppUrl = 'https://0512-176-59-33-152.eu.ngrok.io';
+const webAppUrl = 'http://31.172.134.205:5000';
 const map = 'https://yandex.ru/maps/-/CCUZFCrXHD';
 
 const bot = new TelegramBot(token, {polling: true});
