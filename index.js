@@ -2,8 +2,9 @@ const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
 const cors = require('cors');
 
-const token = '5668805313:AAEjoTsoorxXofOejRp6uN8D1aeTYdIz4Z8';
-const webAppUrl = 'https://mellifluous-blancmange-dbb48f.netlify.app';
+const token = '5641968865:AAFZN32b3Wo2k8NMydxlylUqHl60FSW_Ygc';
+const webAppUrl = 'https://0512-176-59-33-152.eu.ngrok.io';
+const map = 'https://yandex.ru/maps/-/CCUZFCrXHD';
 
 const bot = new TelegramBot(token, {polling: true});
 const app = express();
@@ -13,77 +14,47 @@ app.use(cors());
 
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
-    // const botOwner = '266833777';
     const text = msg.text;
 
     if(text === '/start') {
-        await bot.sendMessage(chatId, 'Заходи в наш автосревис по кнопке ниже', {
+        await bot.sendMessage(chatId, 'Заходи в наш автосервис по кнопке ниже', {
             reply_markup: {
                 inline_keyboard: [
-                    [{text: 'Сделать заказ', web_app: {url: webAppUrl}}]
+                    [{text: 'Автосервис', web_app: {url: webAppUrl}},
+                        {text: 'Карта', url: map}]
                 ]
             }
         })
     }
-    // if(msg?.web_app_data?.data) {
-    //     try {
-    //         const data = JSON.parse(msg?.web_app_data?.data)
-    //         console.log(data)
-    //         // await bot.sendMessage(chatId, 'Спасибо за обратную связь!')
-    //         // await bot.sendMessage(chatId, 'Ваше имя: ' + data?.customerName);
-    //         // await bot.sendMessage(chatId, 'ваша машина: ' + data?.customerCar);
-    //
-    //         // setTimeout(async () => {
-    //         //     await bot.sendMessage(chatId, 'Всю информацию вы получите в этом чате');
-    //         // }, 3000)
-    //
-    //
-    //         // setTimeout(async () => {
-    //         //     await bot.sendMessage(chatId, 'Всю информацию вы получите в этом чате');
-    //
-    //
-    //             // await bot.answerWebAppQuery(botOwner, {
-    //             //     id: botOwner,
-    //             //     title: 'Успешная покупка',
-    //             // })
-    //
-    //         // }, 3000)
-    //
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // }
 });
 
+
 app.post('/web-data', async (req, res) => {
-    const {queryId, products = [], totalPrice , customerName, customerCar} = req.body;
-    console.log("body: ", req.body )
-    //const botOwner = '266833777'
+    const {queryId, user, products = [], totalPrice, customerName, customerPhoneNumber, customerCar} = req.body;
+    console.log(req.body)
+
+    const botOwner = '266833777'
+
     try {
         await bot.answerWebAppQuery(queryId, {
             type: 'article',
             id: queryId,
-            title: 'Успешная заявка',
+            title: 'Успешная покупка',
             input_message_content: {
-                message_text: `${customerName},${customerCar}  поздравляю вас, вы оформили на ремонт ${products.map(item => item.title).join(', ')}, на сумму от ${totalPrice}`
-                // message_text: `Работает ${products.map(item => item.title).join(', ')}, на сумму от ${totalPrice}`
+                message_text: `Оформить заявку`
+
             }
         })
 
-        // await bot.answerWebAppQuery(botOwner, {
-        //     type: 'article',
-        //     id: botOwner,
-        //     title: 'Успешная заявка',
-        //     input_message_content: {
-        //         message_text: ` ${customerName}, владелец авто ${customerCar}, оформил заявку на ремонт ремонт ${products.map(item => item.title).join(', ')}, на сумму от ${totalPrice}`
-        //     }
-        // })
+        await bot.sendMessage(user.id, `${customerName || user.first_name}, поздравляю, вы оформили заявку на сумму от ${totalPrice} рублей, на следующее: ${products.map(item => item.title).join(', ')} ${customerCar ? `для ${customerCar}` : ''}`)
+        await bot.sendMessage(botOwner, `${customerName || user.first_name}[ tg://user?id=${user.id} ] тел: [ ${customerPhoneNumber} ] оформил заявку на сумму от ${totalPrice} рублей, ${products.map(item => item.title).join(', ')} ${customerCar ? `для ${customerCar}` : ''}`)
 
-        return res.status(200).json({message: 'Success'});
+        return res.status(200).json({});
     } catch (e) {
-        return res.status(500).json({message: 'Error connecting to db', e})
+        return res.status(500).json({})
     }
 })
+
 
 const PORT = 8000;
 
